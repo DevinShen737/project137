@@ -21,3 +21,13 @@ canvas
 box-shadow: 10px 10px 10px grey;
 border-radius: 10px;
 }
+
+button
+{
+    font-size: 40px;
+    width: 500px;
+    border-radius: 50px;
+    box-shadow: 10px 10px 10px rgb(0, 0, 0);
+    
+}
+

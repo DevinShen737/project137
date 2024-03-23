@@ -1,36 +1,52 @@
 img = "";
-status = "";
+status1 = "";
+object = [];
+
+function start(){
+    objectDetector = ml5.objectDetector('cocossd', modelLoaded);
+    document.getElementById("status").innerHTML = "Status : Detecting Objects";
+}
 
 function preload(){
-    img = loadImage("fruit.jpg");
+
 }
 
 function setup() {
-    canvas = createCanvas(640, 420);
+    canvas = createCanvas(380, 380);
     canvas.center();
-    object = ml5.objectDetector('cocossd', modelLoaded);
-    document.getElementById("status").innerHTML = "Status : Detecting Object";
+    video = createCapture(VIDEO);
+    video.size(380,380);
+    video.hide();
 }
 
 function draw() {
-    image(img, 0, 0, 640, 420);
-    fill("red");
-    text("apple", 45, 75);
-    noFill();
-    stroke("red");
-    rect(30, 60, 300, 300 );
+    image(video, 0, 0, 640, 420);
 
-    fill("red");
-    text("orange", 320, 120);
-    noFill();
-    stroke("red")
-    rect(300, 90, 270, 250 );
+    if(status1 !="")
+    {
+        r = random(255);
+        g = random(255);
+        b = random(255);
+        objectDetector.detect(video, gotResult);
+        for (i = 0; i < object.length; i++)
+        {
+            document.getElementById("status").innerHTML = "Status : Object Detected";
+            document.getElementById("number_of_object").innerHTML = "Number of objects detected are : "+ object.length;
+
+            fill(r,g,b);
+            percent = floor(object[i].confidence * 100);
+            text(object[i].label + " " + percent + "%", object[i].x + 15, object[i].y + 15);
+            noFill();
+            stroke(r,g,b);
+            rect(object[i].x, object[i].y, object[i].width, object[i].height);
+        }
+    }
 }
 
 function modelLoaded() {
     console.log("Model Loaded!")
-    status = true;
-    object.detect(img, gotResult);
+    status1 = true;
+    objectDetector.detect(video, gotResult);
 }
 
 function gotResult(error, results) {
@@ -38,4 +54,6 @@ function gotResult(error, results) {
         console.log(error);
     }
     console.log(results);
+    object = results;
 }
+
